@@ -22,4 +22,8 @@ kubectl apply -f contrib/deploy/crds/postgresdatabases.postgres.database.k8s.jkr
 ## Operator install
 There is a helm chart inside [`contrib/helm/charts/postgres-database-operator`](./contrib/helm/charts/postgres-database-operator) directory to install the operator.
 
+```bash
+helm upgrade --install db-operator contrib/helm/charts/postgres-database-operator
+```
+
 Prebuild images are available on docker hub. http://hub.docker.com/r/jkroepke/postgres-database-operator

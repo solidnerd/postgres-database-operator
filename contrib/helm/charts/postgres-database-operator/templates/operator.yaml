@@ -14,9 +14,9 @@ spec:
       labels:
         application: postgres-database-operator
     spec:
-      serviceAccountName: postgres-database-operator-account
+      serviceAccountName: db-postgres-operator
       containers:
-        - name: postgres-database-operator
+        - name: operator
           image: {{ .Values.image }}
           imagePullPolicy: Always
           env:
@@ -54,3 +54,10 @@ spec:
             - name: PGBOUNCER_AUTH_QUERY_DB_NAME
               value: {{ .Values.postgresql.bgBouncerAuthQueryDbName | quote }}
             {{- end }}
+      {{- if .Values.cloudsql.enabled }}
+        - name: proxy
+          image: "gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0"
+          args:
+            - "{{ .Values.cloudsql.connectionName}}"
+            - "--structured-logs"
+        {{- end }}
