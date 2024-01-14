@@ -12,7 +12,7 @@ help: ## Display this help.
 
 all: build
 
-build: docker-build
+build: check-helm docker-build
 
 docker-build: ## Build docker image with the manager.
 	docker build -t ${IMG} .
@@ -20,3 +20,15 @@ docker-build: ## Build docker image with the manager.
 docker-push: ## Push docker image with the manager.
 	docker push ${IMG}
 
+check-helm: ## Ensure the helm charts lint successfully
+	helm lint contrib/helm/charts/*
+
+helm-docs: ## Ensure the helm charts lint successfully
+	helm-docs contrib/helm/charts/postgres-database-operator
+
+helm-template: ## Ensure the helm charts lint successfully
+	helm template contrib/helm/charts/postgres-database-operator
+
+
+helm-template2: ## Ensure the helm charts lint successfully
+	helm template contrib/helm/charts/postgres-database-operator --set "cloudsql.enabled=true"

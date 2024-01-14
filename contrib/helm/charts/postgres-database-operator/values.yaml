@@ -13,3 +13,8 @@ postgresql:
   bgBouncerAuthQueryDbUser: pgbouncer
   bgBouncerAuthQueryDbPassword: ""
   bgBouncerAuthQueryDbName: pgbouncer
+
+cloudsql:
+  enabled: false
+  connections:
+  - name: "myProject:europe-west4:SQLINSTANCE"

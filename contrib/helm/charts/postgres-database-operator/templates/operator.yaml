@@ -58,6 +58,6 @@ spec:
         - name: proxy
           image: "gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0"
           args:
-            - "{{ .Values.cloudsql.connectionName}}"
+            - "{{ include "cloudsql.instancelist" . }}"
             - "--structured-logs"
         {{- end }}
