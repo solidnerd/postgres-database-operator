@@ -16,4 +16,4 @@ COPY lib lib
 USER 1001
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["kopf", "run", "--liveness", "http://0.0.0.0:8080/healthz", "handlers.py"]
+CMD ["kopf", "run", "--all-namespaces","--liveness", "http://0.0.0.0:8080/healthz", "handlers.py"]
