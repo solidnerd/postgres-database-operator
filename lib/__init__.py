@@ -39,7 +39,8 @@ def connect_to_postgres() -> psycopg2:
 
 
 def create_db_username(con: psycopg2, name: str, password: str) -> None:
-    password_encrypted = encrypt_password(password=password, user=name, scope=con, algorithm='md5')
+    password_encrypted = encrypt_password(
+        password=password, user=name, scope=con, algorithm='md5')
 
     with con.cursor() as cur:
         cur.execute(sql.SQL("CREATE USER {} WITH ENCRYPTED PASSWORD {}").format(
@@ -92,7 +93,8 @@ def grant_connect_on_db(con: psycopg2, database: str, username: str) -> None:
 
 def db_exists(con: psycopg2, name: str) -> bool:
     with con.cursor() as cur:
-        cur.execute("SELECT datname FROM pg_catalog.pg_database WHERE lower(datname) = lower(%s);", (name,))
+        cur.execute(
+            "SELECT datname FROM pg_catalog.pg_database WHERE lower(datname) = lower(%s);", (name,))
 
         return cur.fetchone() is not None
 

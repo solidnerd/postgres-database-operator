@@ -22,16 +22,20 @@ def connect_to_postgres() -> psycopg2:
 
 def create_database(con: psycopg2):
     with con.cursor() as cur:
-        cur.execute("CREATE TABLE IF NOT EXISTS pgbouncer_shadow (usename text, passwd text);")
+        cur.execute(
+            "CREATE TABLE IF NOT EXISTS pgbouncer_shadow (usename text, passwd text);")
 
 
 def insert_db_username(con: psycopg2, name: str, password: str):
-    password_encrypted = encrypt_password(password=password, user=name, scope=con, algorithm='md5')
+    password_encrypted = encrypt_password(
+        password=password, user=name, scope=con, algorithm='md5')
 
     with con.cursor() as cur:
-        cur.execute("INSERT INTO pgbouncer_shadow VALUES (%s, %s);", (name, password_encrypted))
+        cur.execute("INSERT INTO pgbouncer_shadow VALUES (%s, %s);",
+                    (name, password_encrypted))
 
 
 def remove_db_username(con: psycopg2, db_username: str):
     with con.cursor() as cur:
-        cur.execute("DELETE FROM pgbouncer_shadow WHERE usename=%s;", (db_username,))
+        cur.execute(
+            "DELETE FROM pgbouncer_shadow WHERE usename=%s;", (db_username,))

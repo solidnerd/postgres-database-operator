@@ -19,9 +19,11 @@ async def startup(**_):
 @kopf.on.create('postgres.database.k8s.jkroepke.de', 'v1alpha1', 'postgresdatabases')
 def create(body: dict, spec: dict, meta: dict, **_):
     db_name = lib.generate_db_name(meta.get('namespace'), meta.get('name'))
-    db_username = lib.generate_db_username(meta.get('namespace'), meta.get('name'))
+    db_username = lib.generate_db_username(
+        meta.get('namespace'), meta.get('name'))
 
-    kopf.info(body, reason='Scheduled', message='Start creating database: {}'.format(db_name))
+    kopf.info(body, reason='Scheduled',
+              message='Start creating database: {}'.format(db_name))
 
     operator_db_username = os.getenv('POSTGRES_USER')
 
@@ -39,7 +41,8 @@ def create(body: dict, spec: dict, meta: dict, **_):
 
         if lib.pgbouncer.enabled():
             con_proxy = lib.pgbouncer.connect_to_postgres()
-            lib.pgbouncer.insert_db_username(con_proxy, db_username, db_password)
+            lib.pgbouncer.insert_db_username(
+                con_proxy, db_username, db_password)
             con_proxy.close()
 
         message = "Created user {0}.".format(db_username)
@@ -87,7 +90,8 @@ def create(body: dict, spec: dict, meta: dict, **_):
 
     try:
         secret = lib.create_kubernetes_secret(secret_doc)
-        kopf.info(secret_doc, reason='Successful Create', message='Secret created: {}'.format(secret_name))
+        kopf.info(secret_doc, reason='Successful Create',
+                  message='Secret created: {}'.format(secret_name))
     except Exception as e:
         lib.delete_db(con, db_name, db_username)
         lib.delete_db_username(con, db_username)
@@ -98,7 +102,8 @@ def create(body: dict, spec: dict, meta: dict, **_):
 
     con.close()
 
-    kopf.info(body, reason='Successful Create', message='Database successfully created')
+    kopf.info(body, reason='Successful Create',
+              message='Database successfully created')
     return {'children': [secret.metadata['uid']]}
 
 
@@ -110,9 +115,11 @@ def update(**_):
 @kopf.on.delete('postgres.database.k8s.jkroepke.de', 'v1alpha1', 'postgresdatabases')
 def delete(body: dict, meta: dict, **_):
     db_name = lib.generate_db_name(meta.get('namespace'), meta.get('name'))
-    db_username = lib.generate_db_username(meta.get('namespace'), meta.get('name'))
+    db_username = lib.generate_db_username(
+        meta.get('namespace'), meta.get('name'))
 
-    kopf.info(body, reason='Killing', message='Killing database: {}'.format(db_name))
+    kopf.info(body, reason='Killing',
+              message='Killing database: {}'.format(db_name))
 
     # connect to DB
     try:
