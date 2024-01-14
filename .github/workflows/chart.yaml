@@ -1,0 +1,40 @@
+name: Lint Charts
+on:
+  pull_request:
+    branches:
+      - 'master'
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.13.3
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.6.1
+
+      - name: Run chart-testing (list-changed)
+        id: list-changed
+        run: |
+          changed=$(ct --config .github/ct.yaml list-changed)
+          if [[ -n "$changed" ]]; then
+            echo "::set-output name=changed::true"
+          fi
+
+      - name: Run chart-testing (lint)
+        run: ct --config .github/ct.yaml lint

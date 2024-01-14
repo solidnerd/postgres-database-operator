@@ -1,0 +1,5 @@
+chart-dirs:
+  - contrib/helm/charts/postgres-database-operator
+remote: origin
+target-branch: master
+check-version-increment: false
